@@ -1,0 +1,89 @@
+{
+  "inbounds": [
+    {
+      "listen": "127.0.0.1",
+      "port": 2080,
+      "protocol": "socks",
+      "tag": "socks-in"
+    },
+    {
+      "listen": "127.0.0.1",
+      "port": 2081,
+      "protocol": "http",
+      "tag": "http-in"
+    }
+  ],
+  "log": {
+    "loglevel": "warning"
+  },
+  "outbounds": [
+    {
+      "domainStrategy": "AsIs",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "46.246.98.196",
+            "port": 443,
+            "users": [
+              {
+                "encryption": "none",
+                "flow": "xtls-rprx-vision",
+                "id": "2b4d1fa8-ed57-474a-8f64-bf99ffec2a0e"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "allowInsecure": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "tag": "proxy"
+    },
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "block"
+    }
+  ],
+  "policy": {
+    "levels": {
+      "1": {
+        "connIdle": 30
+      }
+    },
+    "system": {
+      "statsOutboundDownlink": true,
+      "statsOutboundUplink": true
+    }
+  },
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "domain": ["ru"],
+        "outboundTag": "direct"
+      },
+      {
+        "domain": ["vk.com"],
+        "outboundTag": "direct"
+      },
+      {
+        "protocol": ["bittorrent"],
+        "outboundTag": "direct"
+      },
+      {
+        "outboundTag": "proxy",
+        "port": "0-65535"
+      }
+    ]
+  }
+}
